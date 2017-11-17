@@ -1,0 +1,48 @@
+.. role:: bash(code)
+    :language: bash
+
+.. role:: cpp(code)
+    :language: cpp
+
+============
+BlogAssets
+============
+
+--------------------------------------------------------------------------------------------------
+Data, code, graphs, images and other assets that are used on the blog www.mbedded.ninja.
+--------------------------------------------------------------------------------------------------
+
+-----------
+Programming
+-----------
+
+GCCProfiling
+------------
+
+Example code for using :code:`gprof`.
+
+Run the commands:
+
+.. code::
+
+    $ gcc -pg -no-pie profiling_test.c -o profiling_test
+    $ ./profiling_test
+    $ gprof ./profiling_test
+    Flat profile:
+
+    Each sample counts as 0.01 seconds.
+    %   cumulative   self              self     total           
+     time   seconds   seconds    calls  ms/call  ms/call  name    
+     60.96      0.68     0.68        1   676.63   676.63  fibonacci
+     31.84      1.03     0.35        1   353.47   353.47  loop100M
+      8.19      1.12     0.09                             frame_dummy
+    ...
+
+To create a profile visualization, install :code:`gprof2dot` and then run:
+
+.. code::
+
+    $ gcc -pg -no-pie profiling_test.c -o profiling_test
+    $ ./profiling_test
+    $ gprof ./profiling_test > profiling.txt
+    $ gprof2dot ./profiling.txt | dot -Tpng -o profiling.png
