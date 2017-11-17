@@ -1,5 +1,8 @@
 import numpy as np
 from numpy.linalg import inv
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib.collections import PatchCollection
 
 print("Hello")
 
@@ -11,10 +14,10 @@ quad1 = np.array([
     [1, 0]])
 
 quad2 = np.array([
-    [10, 10],
-    [10, 12],
-    [12, 12],
-    [12, 10]])
+    [1, 2],
+    [1, 4],
+    [3, 4],
+    [3, 2]])
 
 inputPoint = np.array([[0], [0]])
 
@@ -69,3 +72,38 @@ inputPoint3D = np.vstack([inputPoint, [1]])
 outputPoint3D = np.dot(T, inputPoint3D)
 
 print("outputPoint = " + str(outputPoint3D))
+
+fig1 = plt.figure()
+ax = fig1.add_subplot(111, aspect='equal')
+patchA = []
+
+ax.add_patch(patches.Polygon(quad1, linewidth=1, edgecolor='b', facecolor='none'))
+
+textHAlign = ['right', 'right', 'left', 'left']
+textVAlign = ['top', 'bottom', 'bottom', 'top']
+
+for index, elem in enumerate(quad1):
+    ax.text(elem[0], elem[1], r'$p_' + str(index+1) + '$', horizontalalignment=textHAlign[index], verticalalignment=textVAlign[index])
+
+ax.add_patch(patches.Polygon(quad2, linewidth=1, edgecolor='r', facecolor='none'))
+
+for index, elem in enumerate(quad2):
+    ax.text(elem[0], elem[1], r'$q_' + str(index+1) + '$', horizontalalignment=textHAlign[index], verticalalignment=textVAlign[index])        
+
+# Draw arrows from each point p to it's paired point q
+for index, elem in enumerate(quad1):
+    ax.arrow(elem[0], elem[1], quad2[index][0] - elem[0], quad2[index][1] - elem[1], facecolor='none', linewidth=1, edgecolor='#d8d8d8')
+
+
+plt.xlim([-1, 5])
+plt.ylim([-1, 5])
+
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('2D Quad-to-Quad Transformation')
+fig1.savefig('output.png', dpi=90, bbox_inches='tight')
+plt.show()
+
+
+
+
