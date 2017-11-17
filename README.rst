@@ -13,6 +13,25 @@ Data, code, graphs, images and other assets that are used on the blog www.mbedde
 --------------------------------------------------------------------------------------------------
 
 -----------
+Mathematics
+-----------
+
+QuadToQuad
+----------
+
+Python script that performs 2D quad-to-quad projections.
+
+.. code::
+
+    $ python3 main.py
+    ...output text and image
+
+Dependencies:
+
+- numpy
+- matplotlib
+
+-----------
 Programming
 -----------
 
