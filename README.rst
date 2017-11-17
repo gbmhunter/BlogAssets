@@ -35,8 +35,8 @@ Dependencies:
 Programming
 -----------
 
-GCCProfiling
-------------
+ProfilingGprof
+--------------
 
 Example code for using :code:`gprof`.
 
@@ -65,3 +65,15 @@ To create a profile visualization, install :code:`gprof2dot` and then run:
     $ ./profiling_test
     $ gprof ./profiling_test > profiling.txt
     $ gprof2dot ./profiling.txt | dot -Tpng -o profiling.png
+
+ProfilingValgrind
+-----------------
+
+Profiling example code using Valgrind/Callgrind and displaying the results with kcachegrind.
+
+Run the command:
+
+.. code::
+
+    $ ./run.sh
+
