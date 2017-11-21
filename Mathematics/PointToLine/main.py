@@ -88,6 +88,13 @@ for i in np.nditer(index):
     lineZ.append(pointP3[2] + vectorP3P4[2]*i)
 ax.plot(lineX, lineY, lineZ, linestyle='--')
 
+percentageFromP3ToP4 = 0.8
+ax.text(
+    pointP3[0] + vectorP3P4[0]*percentageFromP3ToP4 + 0.1, 
+    pointP3[1] + vectorP3P4[1]*percentageFromP3ToP4 + 0.1,
+    pointP3[2] + vectorP3P4[2]*percentageFromP3ToP4 + 0.1,
+    'distance', (vectorP3P4[0], vectorP3P4[1], vectorP3P4[2]), horizontalalignment='left', verticalalignment='top')
+
 # ax.quiver(pointP3[0], pointP3[1], pointP3[2], vectorP3P4[0], vectorP3P4[1], vectorP3P4[2])
 
 plt.show()
