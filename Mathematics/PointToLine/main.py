@@ -30,17 +30,17 @@ ax = fig.add_subplot(111,projection='3d')
 
 # Plot X1 and X2
 ax.scatter(pointP1[0] , pointP1[1] , pointP1[2],  color='green')
-ax.text(pointP1[0]+0.1, pointP1[1]+0.1, pointP1[2]+0.1, r'$P1' + '$', horizontalalignment='left', verticalalignment='top')
+ax.text(pointP1[0]+0.1, pointP1[1]+0.1, pointP1[2]+0.1, r'$p1' + '$', horizontalalignment='left', verticalalignment='top')
 
 ax.scatter(pointP2[0] , pointP2[1] , pointP2[2],  color='green')
-ax.text(pointP2[0]+0.1, pointP2[1]+0.1 , pointP2[2]+0.1, r'$P2' + '$', horizontalalignment='left', verticalalignment='top')
+ax.text(pointP2[0]+0.1, pointP2[1]+0.1 , pointP2[2]+0.1, r'$p2' + '$', horizontalalignment='left', verticalalignment='top')
 
 # Create line through X1, X2
 lineX = []
 lineY = []
 lineZ = []
 
-index = np.linspace(-0.5,1.5,11)
+index = np.linspace(-0.2,1.2,11)
 for i in np.nditer(index):
     lineX.append(pointP1[0] + (pointP2[0] - pointP1[0])*i)
     lineY.append(pointP1[1] + (pointP2[1] - pointP1[1])*i)
@@ -51,7 +51,7 @@ ax.plot(lineX, lineY, lineZ)
 # Create third point, P3 (not on line)
 pointP3 = np.array([3, 4, 2])
 ax.scatter(pointP3[0] , pointP3[1] , pointP3[2],  color='blue')
-ax.text(pointP3[0]+0.1, pointP3[1]+0.1, pointP3[2]+0.1, r'$P3' + '$', horizontalalignment='left', verticalalignment='top')
+ax.text(pointP3[0]+0.1, pointP3[1]+0.1, pointP3[2]+0.1, r'$p3' + '$', horizontalalignment='left', verticalalignment='top')
 
 # Show distance between line and point
 
@@ -75,6 +75,7 @@ print('u = ' + str(u))
 # Plot point P4, point on line closest to P3
 pointP4 = np.array([pointP1[0] + (pointP2[0] - pointP1[0])*u, pointP1[1] + (pointP2[1] - pointP1[1])*u, pointP1[2] + (pointP2[2] - pointP1[2])*u])
 ax.scatter(pointP4[0] , pointP4[1] , pointP4[2],  color='blue')
+ax.text(pointP4[0]+0.1, pointP4[1]+0.1, pointP4[2]+0.1, r'$p4' + '$', horizontalalignment='left', verticalalignment='top')
 
 # Draw line between P3 and line (shortest distance)
 vectorP3P4 = np.array([(pointP4[0] - pointP3[0]), (pointP4[1] - pointP3[1]), (pointP4[2] - pointP3[2])])
@@ -96,5 +97,11 @@ ax.text(
     'distance', (vectorP3P4[0], vectorP3P4[1], vectorP3P4[2]), horizontalalignment='left', verticalalignment='top')
 
 # ax.quiver(pointP3[0], pointP3[1], pointP3[2], vectorP3P4[0], vectorP3P4[1], vectorP3P4[2])
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('z')
 
+ax.set_xlim([0, 3.5])
+
+plt.title('3D Point To Line Distance')
 plt.show()
