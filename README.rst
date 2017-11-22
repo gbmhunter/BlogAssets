@@ -36,7 +36,7 @@ Programming
 -----------
 
 ProfilingGprof
---------------
+==============
 
 Example code for using :code:`gprof`.
 
@@ -67,7 +67,7 @@ To create a profile visualization, install :code:`gprof2dot` and then run:
     $ gprof2dot ./profiling.txt | dot -Tpng -o profiling.png
 
 ProfilingValgrind
------------------
+=================
 
 Profiling example code using Valgrind/Callgrind and displaying the results with kcachegrind.
 
@@ -77,3 +77,27 @@ Run the command:
 
     $ ./run.sh
 
+Swig
+====
+
+BasicExample
+------------
+
+A basic SWIG example.
+
+CallbackExample
+---------------
+
+A SWIG example showing how to implements callbacks that cross between Python and C++.
+
+Run the command:
+
+.. code::
+
+    $ ./run.sh
+
+Dependencies
+
+- SWIG (tested on v3.0)
+- python v3.x (tested on v3.5)
+- gcc
