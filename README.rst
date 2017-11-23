@@ -80,6 +80,20 @@ Run the command:
 Swig
 ====
 
+*How To Run Examples:*
+
+Run the command:
+
+.. code::
+
+    $ ./run.sh
+
+*Dependencies (for all SWIG examples):*
+
+- SWIG (tested on v3.0)
+- python v3.x (tested on v3.5)
+- gcc
+
 BasicExample
 ------------
 
@@ -90,25 +104,13 @@ CallbackExample
 
 A SWIG example showing how to implement callbacks that cross between Python and C++.
 
-Run the command:
+CustomTypemapExample
+--------------------
 
-.. code::
-
-    $ ./run.sh
-
-Dependencies
-
-- SWIG (tested on v3.0)
-- python v3.x (tested on v3.5)
-- gcc
+A SWIG example showing how to implement custom typemapss between Python and C++, including
+custom typechecks so that C++ function overloading can be used with the custom typemaps.
 
 FunctionOverloadExample
 -----------------------
 
 A SWIG example showing how C++ function overloads can be called from Python.
-
-Run the command:
-
-.. code::
-
-    $ ./run.sh
