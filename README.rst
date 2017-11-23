@@ -88,7 +88,7 @@ A basic SWIG example.
 CallbackExample
 ---------------
 
-A SWIG example showing how to implements callbacks that cross between Python and C++.
+A SWIG example showing how to implement callbacks that cross between Python and C++.
 
 Run the command:
 
@@ -101,3 +101,14 @@ Dependencies
 - SWIG (tested on v3.0)
 - python v3.x (tested on v3.5)
 - gcc
+
+FunctionOverloadExample
+-----------------------
+
+A SWIG example showing how C++ function overloads can be called from Python.
+
+Run the command:
+
+.. code::
+
+    $ ./run.sh
