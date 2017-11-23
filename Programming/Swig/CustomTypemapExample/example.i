@@ -5,12 +5,11 @@
 %include "std_vector.i"
 %include "stdint.i"
 
-namespace std {
-    // A vector of ints can be taken care of with the provided
-    // templates, but we will have to create type map for vector
-    // of uint8_t (see below)
-    %template(IntVector) vector<int>;    
-}
+
+// A vector of ints can be taken care of with the provided
+// templates, but we will have to create type map for vector
+// of uint8_t (see below)
+%template(IntVector) std::vector<int>;    
 
 //================================//
 //===== std::vector<uint8_t> =====//
