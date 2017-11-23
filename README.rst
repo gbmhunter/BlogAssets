@@ -12,7 +12,7 @@ Mathematics
 -----------
 
 QuadToQuad
-----------
+==========
 
 Python script that performs 2D quad-to-quad projections.
 
