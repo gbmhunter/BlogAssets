@@ -1,3 +1,4 @@
 import example
 
-print(example.fact(4))
+exClass1 = example.ExClass()
+print(exClass1.Factorial(4))
