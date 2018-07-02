@@ -7,8 +7,8 @@ to a set of given (x, y) data points
 import matplotlib.pyplot as plt
 import numpy as np
 
-pointsX = np.array([2, 3, 7])
-pointsY = np.array([1, 4, 5])
+pointsX = np.array([2, 3, 6, 7])
+pointsY = np.array([1, 7, 5, 9])
 
 # Ax = B
 # where:
@@ -39,12 +39,27 @@ print(f'x = {x}')
 fig, ax = plt.subplots()
 
 # Plot points
-ax.scatter(pointsX, pointsY)
+points = ax.scatter(pointsX, pointsY, color='green', label='Data Points')
 
 # Plot best fit
 bestFitX = np.array([pointsX.min() - 1, pointsX.max() + 1])
 bestFitY = x[0]*bestFitX + x[1] # x[0] is a and x[1] is b in the line y(x) = ax + b
-ax.plot(bestFitX, bestFitY)
+best_fit, = ax.plot(bestFitX, bestFitY, color='blue', label='Line Of Best Fit')
 
+# Draw in error lines
+for index, point in enumerate(pointsX):
+    pointOnLineX = pointsX[index]
+    pointOnLineY = x[0]*pointOnLineX + x[1]
 
-plt.savefig('myfilename.png')
+    #ax.arrow([pointsX[index], pointOnLineX], [pointsY[index], pointOnLineY], color='red', linestyle='dashed')
+    ax.annotate(s='', xy=(pointsX[index], pointsY[index]), xytext=(pointOnLineX, pointOnLineY), arrowprops=dict(arrowstyle='<->', color='red', linestyle='dashed'), color='red')
+
+ax.text(2, 2, 'error', color='red', rotation=90)
+
+plt.title('Linear Curve Fitting\n(Least Squares Approach)')
+plt.xlabel('x')
+plt.ylabel('y')
+
+ax.legend([points, best_fit], ['Data points', 'Line of best fit, y = ax + b'])
+
+plt.savefig('graph.png')
