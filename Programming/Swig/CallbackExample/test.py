@@ -13,5 +13,7 @@ def TestFunction():
 callback = Callback(TestFunction)
 
 example1 = example.Example()
+print('Giving python callback class to C++...')
 example1.GiveCallback(callback)
+print('Calling python callback from python through C++..')
 example1.CallCallback()
