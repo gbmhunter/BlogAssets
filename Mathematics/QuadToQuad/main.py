@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 import numpy as np
 from numpy.linalg import inv
 import matplotlib
 import matplotlib.pyplot as plt
+plt.switch_backend('agg') # Allow matplotlib to work in Docker
 import matplotlib.patches as patches
 from matplotlib.collections import PatchCollection
 from PIL import Image
@@ -108,7 +111,7 @@ def ShowTransformationPlot():
     plt.xlabel('x')
     plt.ylabel('y')
     plt.title('2D Quad-to-Quad Transformation')
-    fig1.savefig('output.png', dpi=90, bbox_inches='tight')
+    fig1.savefig('quad-to-quad-points.png', dpi=90, bbox_inches='tight')
     # plt.show()
 
 
@@ -159,7 +162,7 @@ def TransformImage():
     plt.xlabel('x')
     plt.ylabel('y')
     plt.title('2D Quad-to-Quad Transformation With Image')
-    plt.show()
+    plt.savefig('quad-to-quad-image.png')
 
 # IMAGE ON GRAPH
 

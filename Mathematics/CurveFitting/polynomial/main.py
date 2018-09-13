@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import matplotlib.pyplot as plt
+plt.switch_backend('agg') # Allow matplotlib to work in Docker
+
 import numpy as np
 
 def calc_tri(max_num, index):

@@ -48,6 +48,9 @@ RUN apt-get install -y curl grep sed dpkg && \
     rm tini.deb && \
     apt-get clean
 
+# Fix matplotlib issue
+RUN apt-get install -y libgl1-mesa-glx
+
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
 

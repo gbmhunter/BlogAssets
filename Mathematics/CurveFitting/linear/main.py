@@ -5,6 +5,8 @@ to a set of given (x, y) data points
 """
 
 import matplotlib.pyplot as plt
+plt.switch_backend('agg') # Allow matplotlib to work in Docker
+
 import numpy as np
 
 pointsX = np.array([2, 3, 6, 7])

@@ -1,5 +1,8 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import matplotlib.pyplot as plt
+plt.switch_backend('agg') # Allow matplotlib to work in Docker
 from mpl_toolkits.mplot3d import Axes3D
 
 point  = np.array([1, 2, 3])
@@ -104,4 +107,4 @@ ax.set_zlabel('z')
 ax.set_xlim([0, 3.5])
 
 plt.title('3D Point To Line Distance')
-plt.show()
+plt.savefig('graph.png')

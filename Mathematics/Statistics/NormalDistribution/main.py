@@ -1,5 +1,8 @@
+#!/usr/bin/env python3
+
 import math
 import matplotlib.pyplot as plt
+plt.switch_backend('agg') # Allow matplotlib to work in Docker
 import numpy as np
 
 def normal_distribution_pdf(x, mean, sd):
