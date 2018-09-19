@@ -51,6 +51,13 @@ RUN apt-get install -y curl grep sed dpkg && \
 # Fix matplotlib issue
 RUN apt-get install -y libgl1-mesa-glx
 
+###################################################################################################
+# INSTALL VALGRIND
+###################################################################################################
+
+# Used by ProfilingValgrind example
+RUN apt-get install -y valgrind
+
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
 
