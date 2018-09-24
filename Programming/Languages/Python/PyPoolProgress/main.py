@@ -6,10 +6,15 @@ CHECK_PERIOD_MS = 200
 PRINT_PERIOS_MS = 2000
 
 def worker(worker_id):
+    # Sleep a random amount of time from 1 to 4s.
     time.sleep(randint(1,4))
     print(f'worker with id = {worker_id} finished.')
 
-def map_async_test(num_tasks):
+def map_async_test(num_tasks, check_period_ms, print_period_ms):
+    """
+    This will create `num_tasks` number of subprocesses, and report
+    back on the completeion status of the processes every `print_period_ms`.
+    """
     pool = multiprocessing.Pool(processes=4)
     rs = pool.map_async(worker, range(num_tasks))
 
@@ -37,7 +42,7 @@ def imap_unordered_test(num_tasks):
 if __name__ == '__main__':
     print('main() called.')
     
-    map_async_test(10)
+    map_async_test(10, CHECK_PERIOD_MS, PRINT_PERIOS_MS)
     # imap_unordered_test(10)
 
     print('main() finished.')
