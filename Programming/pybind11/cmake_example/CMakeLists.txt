@@ -6,3 +6,5 @@ add_subdirectory(pybind11)
 
 # src/main.cpp is a pybind11-enabled C++ module
 pybind11_add_module(cmake_example src/main.cpp)
+
+#set_target_properties(cmake_example PROPERTIES LINKER_LANGUAGE CXX)
