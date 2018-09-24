@@ -58,6 +58,19 @@ RUN apt-get install -y libgl1-mesa-glx
 # Used by ProfilingValgrind example
 RUN apt-get install -y valgrind
 
+###################################################################################################
+# INSTALL CMAKE
+###################################################################################################
+
+RUN apt-get install -y cmake
+
+###################################################################################################
+# INSTALL msgpack
+###################################################################################################
+
+# This is required for building pybind11 projects
+RUN pip install msgpack
+
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
 
