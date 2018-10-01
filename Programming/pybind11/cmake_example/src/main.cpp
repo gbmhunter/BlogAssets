@@ -1,6 +1,9 @@
 #include <iostream>
-#include <pybind11/pybind11.h>
 
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+#include "BasicTypes.hpp"
 #include "ExampleClass.hpp"
 
 namespace py = pybind11;
@@ -27,7 +30,13 @@ void init_ex2(py::module &m) {
         .def("PrintName", &ExampleClass::PrintName);
 }
 
+void init_basic_types(py::module &m) {
+    py::class_<BasicTypes>(m, "BasicTypes")
+        .def("Vector", &BasicTypes::Vector);
+}
+
 PYBIND11_MODULE(cmake_example, m) {
     init_ex1(m);
     init_ex2(m);
+    init_basic_types(m);
 }

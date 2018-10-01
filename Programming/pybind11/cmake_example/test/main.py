@@ -8,3 +8,6 @@ print(f'example_class.GetName() = {example_class.GetName()}')
 
 # This tests C++ writing to std::cout (should appear on console just like python print() statements)
 example_class.PrintName()
+
+basic_types = cmake_example.BasicTypes
+basic_types.Vector([1, 2, 3])
