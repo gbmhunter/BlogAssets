@@ -35,3 +35,14 @@ def accepts_optional(key: Optional[str]):
     # RIGHT
     if isinstance(key, str):
         print(my_dict[key])
+
+###################################################################################################
+# MYPY SMART ENOUGH TO REALISE str IS NOT NONE 
+###################################################################################################
+
+def test(my_str: Optional[str]):
+    if my_str is None:
+        my_str = 'abc'
+
+    # GOOD: mypy recognizes that my_str cannot be None here
+    my_str2: str = my_str     
