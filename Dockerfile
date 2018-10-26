@@ -71,6 +71,11 @@ RUN apt-get install -y cmake
 # This is required for building pybind11 projects
 RUN pip install msgpack
 
+###################################################################################################
+# INSTALL jsonpickle
+###################################################################################################
+RUN pip install jsonpickle
+
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
 

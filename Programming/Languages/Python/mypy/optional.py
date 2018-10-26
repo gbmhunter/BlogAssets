@@ -46,3 +46,27 @@ def test(my_str: Optional[str]):
 
     # GOOD: mypy recognizes that my_str cannot be None here
     my_str2: str = my_str     
+
+###################################################################################################
+# CORRECTLY CHECKING FOR NONE IN CLASS INITIALIZATION
+###################################################################################################
+
+class Test:
+    def __init__(self, my_str: Optional[str]) -> None:
+        self.my_str = my_str
+
+        # BAD: mypy doesn't recognize that self.my_str won't be None
+        if my_str is None:
+            self.my_str = 'abc'
+
+        my_str2: str = self.my_str # ERROR HERE
+    
+class Test2:
+    def __init__(self, my_str: Optional[str]) -> None:
+        self.my_str = my_str
+
+        # GOOD: mypy recognizes that self.my_str won't be None
+        if self.my_str is None:
+            self.my_str = 'abc'
+
+        my_str2: str = self.my_str # No error here
