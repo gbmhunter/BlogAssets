@@ -30,7 +30,8 @@ def map_async_test(num_tasks, print_period_s):
         # _number_left is the number of "chunks" remaining, which is not the same as the number of tasks!!!
         remaining = async_result._number_left
         elapsed_time = time.time() - start_time
-        print(f'Waiting for child processes to complete. Function = {worker.__name__}(), chunks remaining = {remaining}, elapsed time = {time.strftime("%H:%M:%S", time.gmtime(elapsed_time))}.')
+        print(f'Waiting for child processes to complete. Function = {worker.__name__}(), '
+            f'chunks remaining = {remaining}, elapsed time = {time.strftime("%H:%M:%S", time.gmtime(elapsed_time))}.')
 
         # Wait until all child processes are complete, or it's time to print log message again
         async_result.wait(print_period_s)
@@ -38,11 +39,12 @@ def map_async_test(num_tasks, print_period_s):
         if async_result.ready():
             break
         
-    print(f'Child processes complete. Function = {worker.__name__}(), total time = {time.strftime("%H:%M:%S", time.gmtime(elapsed_time))}.')
+    print(f'Child processes complete. Function = {worker.__name__}(), '
+        f'total time = {time.strftime("%H:%M:%S", time.gmtime(elapsed_time))}.')
 
-    # Not sure if this is needed (worker processes should already be complete), 
-    # but let's terminate just in case!
-    pool.terminate()
+    # We are finished using the pool, so close and join
+    pool.close()
+    pool.join()
 
     # Subprocesses must be finished! Print results
     print(f'results = {async_result.get()}')
