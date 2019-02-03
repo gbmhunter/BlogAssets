@@ -15,7 +15,7 @@ def string_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 def csv_write(file_data):
-    print(f'Writing .csv file.')
+    print(f'Writing .csv file. file_data = {file_data}')
     with open(os.path.join(OUTPUT_DIR, 'data.csv'), 'w') as file:
         csv_writer = csv.writer(file, delimiter=',')
         # Write header row

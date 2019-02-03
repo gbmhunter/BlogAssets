@@ -5,6 +5,7 @@
 #include "cpptoml.h"
 #include "csv.h"
 #include "json.hpp"
+#include "tinyxml2.h"
 
 class Person {
     public:
@@ -21,6 +22,10 @@ class Person {
         age_ = age;
     }
 };
+
+//=============================================================================
+// CSV
+//=============================================================================
 
 std::vector<Person> csv_read(std::string input_file) {
     std::vector<Person> people;
@@ -43,6 +48,10 @@ void csv_write(std::vector<Person> people, std::string file_path) {
     }
     file.close();
 }
+
+//=============================================================================
+// JSON
+//=============================================================================
 
 std::vector<Person> json_read(std::string input_file) {
     std::ifstream i(input_file);
@@ -76,6 +85,10 @@ void json_write(std::vector<Person> people, std::string file_path) {
     file.close();
 }
 
+//=============================================================================
+// TOML
+//=============================================================================
+
 std::vector<Person> toml_read(std::string input_file) {
     std::vector<Person> people;
     auto toml_data = cpptoml::parse_file(input_file);
@@ -107,6 +120,58 @@ void toml_write(std::vector<Person> people, std::string file_path) {
     std::ofstream file(file_path);
     file << toml_people;
     file.close();
+}
+
+//=============================================================================
+// XML
+//=============================================================================
+
+std::vector<Person> xml_read(std::string input_file) {
+    std::vector<Person> people;
+
+    tinyxml2::XMLDocument xml_doc;
+    xml_doc.LoadFile(input_file.c_str());
+    auto xml_people = xml_doc.FirstChildElement("people");
+
+    for(auto xml_person = xml_people->FirstChildElement("person"); 
+        xml_person != nullptr; xml_person = xml_person->NextSiblingElement()) {
+            Person person(
+                std::stoi(xml_person->FirstChildElement("id")->GetText()),
+                xml_person->FirstChildElement("name")->GetText(),
+                xml_person->FirstChildElement("address")->GetText(),
+                std::stof(xml_person->FirstChildElement("age")->GetText()));
+            people.push_back(person);
+    }
+
+    return people;
+}
+
+void xml_write(std::vector<Person> people, std::string file_path) {
+    tinyxml2::XMLDocument xml_doc;
+    auto xml_people = xml_doc.InsertEndChild(xml_doc.NewElement("people"));
+    for(auto person : people) {
+        auto xml_person = xml_doc.NewElement("person");
+
+        auto xml_id = xml_doc.NewElement("id");
+        xml_id->SetText(std::to_string(person.id_).c_str());
+        xml_person->InsertEndChild(xml_id);
+        
+        auto xml_name = xml_doc.NewElement("name");
+        xml_name->SetText(person.name_.c_str());
+        xml_person->InsertEndChild(xml_name);
+        
+        auto xml_address = xml_doc.NewElement("address");
+        xml_address->SetText(person.address_.c_str());
+        xml_person->InsertEndChild(xml_address);
+        
+        auto xml_age = xml_doc.NewElement("age");
+        xml_age->SetText(std::to_string(person.age_).c_str());
+        xml_person->InsertEndChild(xml_age);
+
+        xml_people->InsertEndChild(xml_person);
+    }
+
+    xml_doc.SaveFile(file_path.c_str());
 }
 
 double calc_duration_ms(std::chrono::high_resolution_clock::time_point t1,
@@ -153,28 +218,29 @@ int main(){
     
     auto input_file_dir = std::string("./temp/input_files/");
     auto output_file_dir = std::string("./temp/output_files/");
+    auto stats_file_dir = std::string("./temp/stats/");
 
     auto read_funcs = 
             std::vector<std::function<std::vector<Person>(std::string)>>{
         csv_read,
         json_read,
         toml_read,
+        xml_read,
     };
     
-    read_funcs.push_back(csv_read);
-    read_funcs.push_back(json_read);
-
     auto write_funcs =
         std::vector<std::function<void(std::vector<Person>, std::string)>>{
             csv_write,
             json_write,
             toml_write,
+            xml_write,
         };
 
     auto extensions = std::vector<std::string>{
         "csv",
         "json",
         "toml",
+        "xml",
     };
     
 
@@ -197,5 +263,18 @@ int main(){
         write_durations_ms.push_back(duration_ms);
         std::cout << "Write duration (ms) = " << write_durations_ms[i] << std::endl;
     }
+
+    // Write out stats
+
+    std::string stats_file_path = stats_file_dir + "cpp_stats.csv";
+    std::cout << "Writing stats to " << stats_file_path << std::endl;
+    std::ofstream stats_file;
+    stats_file.open(stats_file_dir + "cpp_stats.csv");
+    stats_file << "Format, Read (ms), Write (ms)" << std::endl;
+    for(uint32_t i = 0; i < extensions.size(); i++) {
+        stats_file << extensions[i] << "," << read_durations_ms[i] << "," <<
+            write_durations_ms[i] << std::endl;
+    }
+    stats_file.close();
 
 }

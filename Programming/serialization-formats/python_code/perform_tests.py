@@ -8,18 +8,22 @@ import timeit
 import matplotlib.pyplot as plt
 import numpy as np
 
+import util
+
 NUM_OBJECTS = 1000
 # NUM_OBJECTS = 10000
 
+timeit.template = """
+def inner(_it, _timer{init}):
+    {setup}
+    _t0 = _timer()
+    for _i in _it:
+        retval = {stmt}
+    _t1 = _timer()
+    return _t1 - _t0, retval
+"""
+
 def main():
-    file_data = []
-    for i in range(NUM_OBJECTS):
-        file_data.append({
-            'id': i,
-            'name': string_generator(),
-            'address': string_generator(size=20),
-            'age': random.uniform(0.0, 100.0),
-        })
 
     serial_formats = [
         'csv',
@@ -29,13 +33,25 @@ def main():
         'xml',
     ]
 
-    timing_results_write = []
-    for serial_format in serial_formats:
-        timing_results_write.append(measure_time(getattr(sys.modules[__name__], f'{serial_format}_write'), file_data))
-
     timing_results_read = []
+
+    data = []
     for serial_format in serial_formats:
-        timing_results_read.append(measure_time(getattr(sys.modules[__name__], f'{serial_format}_read')))
+        print(serial_format)
+        read_func = getattr(util, f'{serial_format}_read')
+        ret_val = measure_time(read_func)
+        print(ret_val)
+        return
+        timing_results_read.append(ret_val[0])
+        data.append(ret_val[1])
+
+    print(data[1])
+    timing_results_write = []
+    for i, serial_format in enumerate(serial_formats):
+        write_func = getattr(util, f'{serial_format}_write')
+        ret_val = measure_time(write_func, data[i])
+        timing_results_write.append(ret_val[0])
+
 
 
     print(f'timing_results_write = {timing_results_write}')
