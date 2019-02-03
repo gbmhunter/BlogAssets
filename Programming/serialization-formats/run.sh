@@ -3,8 +3,8 @@
 # Fail on error
 set -e
 
-mkdir -p temp
-mkdir -p temp/input_files
+#mkdir -p temp
+#mkdir -p temp/input_files
 
 # Create input files for testing
 python ./python_code/create_input.py

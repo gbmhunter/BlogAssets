@@ -8,7 +8,7 @@ import string
 import os
 
 SCRIPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-OUTPUT_DIR = os.path.join(SCRIPT_DIR, '..', 'test', 'input_files')
+OUTPUT_DIR = os.path.join(SCRIPT_DIR, '..', 'temp', 'input_files')
 print(SCRIPT_DIR)
 
 def string_generator(size=6, chars=string.ascii_uppercase + string.digits):

@@ -22,8 +22,11 @@ NUM_OBJECTS = 1000
 def main():
 
     # Check if inputs already exist
-    if os.path.isdir('test'):
-        print('test directory already present, not generating input files.')
+    if not os.path.exists('temp/input_files/'):
+        print(f'Creating input files...')
+        os.makedirs('temp/input_files/')
+    else:
+        print('temp directory already present, not generating input files.')
         return
 
     file_data = []
