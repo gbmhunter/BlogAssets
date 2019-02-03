@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "cpptoml.h"
 #include "csv.h"
 #include "json.hpp"
 
@@ -75,6 +76,39 @@ void json_write(std::vector<Person> people, std::string file_path) {
     file.close();
 }
 
+std::vector<Person> toml_read(std::string input_file) {
+    std::vector<Person> people;
+    auto toml_data = cpptoml::parse_file(input_file);
+    auto toml_people = toml_data->get_table_array("data");
+    for(const auto& toml_person : *toml_people) {
+        auto id = toml_person->get_as<int>("id");
+        Person person(
+            *(toml_person->get_as<uint32_t>("id")),
+            *(toml_person->get_as<std::string>("name")),
+            *(toml_person->get_as<std::string>("address")),
+            *(toml_person->get_as<double>("age")));
+        people.push_back(person);
+    }
+    return people;
+}
+
+void toml_write(std::vector<Person> people, std::string file_path) {
+
+    auto toml_people = cpptoml::make_table_array();
+    for(auto person : people) {
+        auto toml_person = cpptoml::make_table();
+        toml_person->insert("id", person.id_);
+        toml_person->insert("name", person.name_);
+        toml_person->insert("address", person.address_);
+        toml_person->insert("age", person.age_);
+        toml_people->push_back(toml_person);
+    }
+
+    std::ofstream file(file_path);
+    file << toml_people;
+    file.close();
+}
+
 double calc_duration_ms(std::chrono::high_resolution_clock::time_point t1,
     std::chrono::high_resolution_clock::time_point t2) {
 
@@ -121,7 +155,11 @@ int main(){
     auto output_file_dir = std::string("./temp/output_files/");
 
     auto read_funcs = 
-        std::vector<std::function<std::vector<Person>(std::string)>>();
+            std::vector<std::function<std::vector<Person>(std::string)>>{
+        csv_read,
+        json_read,
+        toml_read,
+    };
     
     read_funcs.push_back(csv_read);
     read_funcs.push_back(json_read);
@@ -129,10 +167,15 @@ int main(){
     auto write_funcs =
         std::vector<std::function<void(std::vector<Person>, std::string)>>{
             csv_write,
-            json_write
+            json_write,
+            toml_write,
         };
 
-    auto extensions = std::vector<std::string>{ "csv", "json" };
+    auto extensions = std::vector<std::string>{
+        "csv",
+        "json",
+        "toml",
+    };
     
 
     std::chrono::high_resolution_clock::time_point t1;
