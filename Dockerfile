@@ -76,6 +76,9 @@ RUN pip install msgpack
 ###################################################################################################
 RUN pip install jsonpickle
 
+RUN pip install toml
+RUN pip install PyYAML
+
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
 
