@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import csv
+import os
 import random
 import string
 import sys
@@ -34,6 +36,9 @@ def main():
         'yaml',
         'xml',
     ]
+    read_dir = os.path.join('temp', 'input_files')
+    write_dir = os.path.join('temp', 'output_py')
+    stats_dir = os.path.join('temp', 'stats')
 
     timing_results_read = []
 
@@ -42,23 +47,31 @@ def main():
     for serial_format in serial_formats:
         print(f'Reading {serial_format}')
         read_func = getattr(util, f'{serial_format}_read')
-        ret_val = measure_time(read_func)
+        ret_val = measure_time(read_func, os.path.join(read_dir, f'data.{serial_format}'))
         print(ret_val)
-        timing_results_read.append(ret_val[0])
+        timing_results_read.append(ret_val[0]*1000.0)
         data.append(ret_val[1])
 
     print(f'Performing writes...')
+    if not os.path.exists(write_dir):
+        os.makedirs(write_dir)
     timing_results_write = []
     for i, serial_format in enumerate(serial_formats):
         write_func = getattr(util, f'{serial_format}_write')
         print(f'Calling {write_func}...')
-        ret_val = measure_time(write_func, data[i])
-        timing_results_write.append(ret_val[0])
-
+        ret_val = measure_time(write_func, data[i], os.path.join(write_dir, f'data.{serial_format}'))
+        timing_results_write.append(ret_val[0]*1000.0)
 
 
     print(f'timing_results_write = {timing_results_write}')
     print(f'timing_results_read = {timing_results_read}')
+
+    print(f'Writing results to file.')
+    with open(os.path.join(stats_dir, 'python_stats.csv'), 'w') as file:
+        csv_writer = csv.writer(file)
+        csv_writer.writerow(['Format', 'Read (ms)', 'Write (ms)'])
+        for i in range(len(serial_formats)):
+            csv_writer.writerow([ serial_formats[i], timing_results_read[i], timing_results_write[i] ])
 
     ####################################################################################################
     # DRAW GRAPHS
