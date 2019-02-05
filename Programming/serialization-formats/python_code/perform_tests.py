@@ -5,6 +5,8 @@ import string
 import sys
 import timeit
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -35,20 +37,21 @@ def main():
 
     timing_results_read = []
 
+    print(f'Performing reads...')
     data = []
     for serial_format in serial_formats:
-        print(serial_format)
+        print(f'Reading {serial_format}')
         read_func = getattr(util, f'{serial_format}_read')
         ret_val = measure_time(read_func)
         print(ret_val)
-        return
         timing_results_read.append(ret_val[0])
         data.append(ret_val[1])
 
-    print(data[1])
+    print(f'Performing writes...')
     timing_results_write = []
     for i, serial_format in enumerate(serial_formats):
         write_func = getattr(util, f'{serial_format}_write')
+        print(f'Calling {write_func}...')
         ret_val = measure_time(write_func, data[i])
         timing_results_write.append(ret_val[0])
 
@@ -78,7 +81,7 @@ def main():
 
     ax.set_title('File Write/Read Times For Popular Serialization Formats')
 
-    plt.show()
+    plt.savefig('test.png')
 
 
 def wrapper(func, *args, **kwargs):
