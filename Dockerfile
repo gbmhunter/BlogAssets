@@ -79,7 +79,18 @@ RUN pip install jsonpickle
 RUN pip install toml
 RUN pip install PyYAML
 
+###################################################################################################
+# INSTALL cpp-yaml
+###################################################################################################
+
+RUN git clone https://github.com/jbeder/yaml-cpp.git
+RUN cd yaml-cpp/
+RUN mkdir yaml-cpp/build/
+WORKDIR yaml-cpp/build/
+RUN cmake ..
+RUN make install
+# Reset workdir
+WORKDIR /root/
+
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
-
-

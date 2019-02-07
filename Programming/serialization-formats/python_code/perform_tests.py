@@ -7,15 +7,9 @@ import string
 import sys
 import timeit
 
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import numpy as np
 
 import util
-
-NUM_OBJECTS = 1000
-# NUM_OBJECTS = 10000
 
 timeit.template = """
 def inner(_it, _timer{init}):
@@ -45,10 +39,8 @@ def main():
     print(f'Performing reads...')
     data = []
     for serial_format in serial_formats:
-        print(f'Reading {serial_format}')
         read_func = getattr(util, f'{serial_format}_read')
         ret_val = measure_time(read_func, os.path.join(read_dir, f'data.{serial_format}'))
-        print(ret_val)
         timing_results_read.append(ret_val[0]*1000.0)
         data.append(ret_val[1])
 
@@ -58,7 +50,6 @@ def main():
     timing_results_write = []
     for i, serial_format in enumerate(serial_formats):
         write_func = getattr(util, f'{serial_format}_write')
-        print(f'Calling {write_func}...')
         ret_val = measure_time(write_func, data[i], os.path.join(write_dir, f'data.{serial_format}'))
         timing_results_write.append(ret_val[0]*1000.0)
 
@@ -72,30 +63,6 @@ def main():
         csv_writer.writerow(['Format', 'Read (ms)', 'Write (ms)'])
         for i in range(len(serial_formats)):
             csv_writer.writerow([ serial_formats[i], timing_results_read[i], timing_results_write[i] ])
-
-    ####################################################################################################
-    # DRAW GRAPHS
-    ####################################################################################################
-
-    bar_width = 0.35
-    x_positions = np.arange(0, len(serial_formats))
-    fig, ax = plt.subplots()
-
-    print(x_positions)
-    print(timing_results_write)
-    ax.bar(x_positions, timing_results_write, width=bar_width)
-    ax.bar(x_positions + bar_width, timing_results_read, width=bar_width)
-
-    ax.set_xlabel('Serialization Format')
-    ax.set_xticks(x_positions)
-    ax.set_xticklabels(serial_formats)
-
-    ax.set_ylabel('Seconds (s)')
-
-    ax.set_title('File Write/Read Times For Popular Serialization Formats')
-
-    plt.savefig('test.png')
-
 
 def wrapper(func, *args, **kwargs):
     def wrapped():

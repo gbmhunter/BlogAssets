@@ -2,6 +2,10 @@
 #include <iostream>
 #include <fstream>
 
+// yaml-cpp has to be installed on system
+// (installed in Dockerfile)
+#include <yaml-cpp/yaml.h>
+
 #include "cpptoml.h"
 #include "csv.h"
 #include "json.hpp"
@@ -107,6 +111,7 @@ std::vector<Person> toml_read(std::string input_file) {
 
 void toml_write(std::vector<Person> people, std::string file_path) {
 
+    auto root = cpptoml::make_table();
     auto toml_people = cpptoml::make_table_array();
     for(auto person : people) {
         auto toml_person = cpptoml::make_table();
@@ -117,8 +122,10 @@ void toml_write(std::vector<Person> people, std::string file_path) {
         toml_people->push_back(toml_person);
     }
 
+    root->insert("people", toml_people);
+
     std::ofstream file(file_path);
-    file << toml_people;
+    file << *root;
     file.close();
 }
 
@@ -174,6 +181,44 @@ void xml_write(std::vector<Person> people, std::string file_path) {
     xml_doc.SaveFile(file_path.c_str());
 }
 
+//=============================================================================
+// YAML
+//=============================================================================
+
+std::vector<Person> yaml_read(std::string input_file) {
+    std::vector<Person> people;
+    std::cout << "yaml" << std::endl;
+
+    YAML::Node yaml_people = YAML::LoadFile(input_file);
+    for (std::size_t i = 0; i<yaml_people.size(); i++) {
+        auto yaml_person = yaml_people[i];
+        Person person(
+            yaml_person["id"].as<int>(),
+            yaml_person["name"].as<std::string>(),
+            yaml_person["address"].as<std::string>(),
+            yaml_person["age"].as<double>()
+        );
+        people.push_back(person);
+    }
+    return people;
+}
+
+void yaml_write(std::vector<Person> people, std::string file_path) {
+    YAML::Node yaml_people;
+    for(auto person : people) {
+        YAML::Node yaml_person;
+        yaml_person["id"] = person.id_;
+        yaml_person["name"] = person.name_;
+        yaml_person["address"] = person.address_;
+        yaml_person["age"] = person.age_;
+        yaml_people.push_back(yaml_person);
+    }
+    std::ofstream file(file_path);
+    file << yaml_people;
+    file.close();
+}
+
+
 double calc_duration_ms(std::chrono::high_resolution_clock::time_point t1,
     std::chrono::high_resolution_clock::time_point t2) {
 
@@ -217,7 +262,7 @@ double measure_and_repeat_write(
 int main(){
     
     auto input_file_dir = std::string("./temp/input_files/");
-    auto output_file_dir = std::string("./temp/output_files/");
+    auto output_file_dir = std::string("./temp/output_cpp/");
     auto stats_file_dir = std::string("./temp/stats/");
 
     auto read_funcs = 
@@ -226,6 +271,7 @@ int main(){
         json_read,
         toml_read,
         xml_read,
+        yaml_read,
     };
     
     auto write_funcs =
@@ -234,6 +280,7 @@ int main(){
             json_write,
             toml_write,
             xml_write,
+            yaml_write,
         };
 
     auto extensions = std::vector<std::string>{
@@ -241,6 +288,7 @@ int main(){
         "json",
         "toml",
         "xml",
+        "yaml",
     };
     
 
