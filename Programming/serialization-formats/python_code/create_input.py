@@ -8,8 +8,9 @@ import string
 import sys
 import timeit
 import toml
-import yaml
+import util
 import xml.etree.cElementTree as ET
+import yaml
 
 import matplotlib
 matplotlib.use('Agg')
@@ -17,7 +18,9 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-import util
+# These .proto files are created dynamically by the run.sh script
+sys.path.insert(0, os.path.abspath('./temp/'))
+from proto_py import people_pb2
 
 NUM_OBJECTS = 10
 # NUM_OBJECTS = 10000
@@ -52,6 +55,7 @@ def main():
     serial_formats = [
         'csv',
         'json',
+        'protobuf'
         'toml',
         'yaml',
         'xml',

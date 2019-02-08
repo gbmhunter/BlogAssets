@@ -7,6 +7,10 @@ import xml.etree.cElementTree as ET
 import string
 import os
 
+# These .proto files are created dynamically by the run.sh script
+sys.path.insert(0, os.path.abspath('./temp/'))
+from proto_py import people_pb2
+
 # SCRIPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 # OUTPUT_DIR = os.path.join(SCRIPT_DIR, '..', 'temp', 'output_files_python')
 # print(SCRIPT_DIR)
@@ -40,11 +44,23 @@ def csv_write(file_data, file_path):
             csv_writer.writerow(person.values())
 
 def json_write(file_data, file_path):
-    print(f'Writing .json file.')
     with open(file_path, 'w') as file:
         json.dump(file_data, file)
 
 def json_read(file_path):
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+    return data
+
+def protobuf_write(file_data, file_path):
+    print(f'Writing .protobuf file.')
+
+    for person in file_data:
+
+    with open(file_path, 'w') as file:
+        json.dump(file_data, file)
+
+def protobuf_read(file_path):
     print(f'Writing .json file.')
     with open(file_path, 'r') as file:
         data = json.load(file)

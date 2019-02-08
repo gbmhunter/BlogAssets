@@ -92,5 +92,25 @@ RUN make install
 # Reset workdir
 WORKDIR /root/
 
+###################################################################################################
+# INSTALL protobuf
+###################################################################################################
+
+# Install C++ protobuf
+RUN wget https://github.com/protocolbuffers/protobuf/releases/download/v3.7.0rc2/protobuf-python-3.7.0-rc-2.tar.gz
+RUN tar xf protobuf-python-3.7.0-rc-2.tar.gz
+WORKDIR protobuf-3.7.0-rc-2/
+RUN ./configure
+RUN make install
+RUN ldconfig
+
+# Install python protobuf
+WORKDIR python/
+RUN python setup.py build
+RUN python setup.py install
+
+# Reset workdir
+WORKDIR /root/
+
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
