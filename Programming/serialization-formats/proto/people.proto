@@ -4,7 +4,7 @@ message Person {
   int32 id = 1;
   string name = 2;
   string address = 3;
-  float score = 4;
+  float age = 4;
 }
 
 message People {

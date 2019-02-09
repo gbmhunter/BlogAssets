@@ -26,6 +26,7 @@ def main():
     serial_formats = [
         'csv',
         'json',
+        'protobuf',
         'toml',
         'yaml',
         'xml',

@@ -1,11 +1,12 @@
 import csv
 import json
+import os
 import random
+import sys
 import toml
 import yaml
 import xml.etree.cElementTree as ET
 import string
-import os
 
 # These .proto files are created dynamically by the run.sh script
 sys.path.insert(0, os.path.abspath('./temp/'))
@@ -52,19 +53,30 @@ def json_read(file_path):
         data = json.load(file)
     return data
 
+def protobuf_read(file_path):
+    print(f'Reading .protobuf file.')
+    with open(file_path, 'rb') as file:
+        protobuf_people = people_pb2.People()
+        protobuf_people.ParseFromString(file.read())
+
+    for protobuf_person in protobuf_people.person:
+        print(protobuf_person)
+
+    return []
+
 def protobuf_write(file_data, file_path):
     print(f'Writing .protobuf file.')
 
+    protobuf_people = people_pb2.People()
     for person in file_data:
+        protobuf_person = protobuf_people.person.add()
+        protobuf_person.id = person['id']
+        protobuf_person.name = person['name']
+        protobuf_person.address = person['address']
+        protobuf_person.age = person['age']
 
-    with open(file_path, 'w') as file:
-        json.dump(file_data, file)
-
-def protobuf_read(file_path):
-    print(f'Writing .json file.')
-    with open(file_path, 'r') as file:
-        data = json.load(file)
-    return data
+    with open(file_path, 'wb') as file:
+        file.write(protobuf_people.SerializeToString())
 
 def toml_write(file_data, file_path):
     print(f'Writing .toml file.')
