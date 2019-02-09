@@ -5,12 +5,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+import util
+
 SCRIPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 STATS_DIR = os.path.join(SCRIPT_DIR, '..', 'temp', 'stats')
+OUTPUT_PY_DIR = os.path.join(SCRIPT_DIR, '..', 'temp', 'output_py') 
 
 def main():
     analyze_stats_file(os.path.join(STATS_DIR, 'cpp_stats.csv'), 'C++', 'cpp')
     analyze_stats_file(os.path.join(STATS_DIR, 'python_stats.csv'), 'Python', 'python')
+    analyze_file_size()
 
 def analyze_stats_file(file_path: str, language: str, file_suffix: str) -> None:
 
@@ -43,8 +47,6 @@ def analyze_stats_file(file_path: str, language: str, file_suffix: str) -> None:
     x_positions = np.arange(len(serial_formats))
     fig, ax = plt.subplots()
 
-    print(x_positions)
-    # print(timing_results_write)
     ax.bar(x_positions, timing_results_write,
             align='center',
             width=bar_width,
@@ -66,6 +68,33 @@ def analyze_stats_file(file_path: str, language: str, file_suffix: str) -> None:
 
     plt.savefig(os.path.join(STATS_DIR, 
             f'serialization-formats-read-write-times-{file_suffix}.png'))
+
+def analyze_file_size():
+    print('Analyzing file sizes...')
+
+    serial_formats = util.get_serial_formats()
+
+    file_sizes_bytes = []
+    for serial_format in serial_formats:
+        file_path = os.path.join(OUTPUT_PY_DIR, f'data.{serial_format}')
+        # Item 6 is the size in bytes
+        file_size_bytes = os.stat(file_path)[6]
+        file_sizes_bytes.append(file_size_bytes)
+
+    print(f'file_sizes_bytes = {file_sizes_bytes}')
+
+    x_positions = np.arange(len(file_sizes_bytes))
+
+    fig, ax = plt.subplots()
+    ax.bar(x_positions, file_sizes_bytes)
+
+    ax.set_xlabel('Serialization Format')
+    ax.set_xticks(x_positions)
+    ax.set_xticklabels(serial_formats)
+    ax.set_ylabel('File Size (MiB)')
+    ax.set_title('File Sizes For Popular Serialization Formats')
+
+    plt.savefig(os.path.join(STATS_DIR, f'serialization-formats-file-sizes.png'))
 
 if __name__ == '__main__':
     main()

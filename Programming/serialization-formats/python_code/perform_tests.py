@@ -11,6 +11,7 @@ import numpy as np
 
 import util
 
+# This template is used so we can return values from the called function
 timeit.template = """
 def inner(_it, _timer{init}):
     {setup}
@@ -22,15 +23,10 @@ def inner(_it, _timer{init}):
 """
 
 def main():
+    print('============================')
+    print('perform_tests.main() called.')
 
-    serial_formats = [
-        'csv',
-        'json',
-        'protobuf',
-        'toml',
-        'yaml',
-        'xml',
-    ]
+    serial_formats = util.get_serial_formats()
     read_dir = os.path.join('temp', 'input_files')
     write_dir = os.path.join('temp', 'output_py')
     stats_dir = os.path.join('temp', 'stats')
@@ -73,8 +69,18 @@ def wrapper(func, *args, **kwargs):
 def measure_time(func, *arguments):
     wrapped = wrapper(func, *arguments)
     # We only want to include one run in the time info
-    return timeit.timeit(wrapped, number=1)
+    return timeit.timeit(wrapped, number=1, repeat=3)
 
+def measure_time_v2(func, *arguments):
+    run_times_s = []
+    ret_vals = []
+    for i in range(3):
+        start_time = 
+        ret_val = func(arguments)
+        end_time = 
+        ret_vals.append(ret_val)
+
+    return min(run_times_s), ret_vals
 
 if __name__ == '__main__':
     main()

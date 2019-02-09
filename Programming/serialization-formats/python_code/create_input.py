@@ -8,7 +8,6 @@ import string
 import sys
 import timeit
 import toml
-import util
 import xml.etree.cElementTree as ET
 import yaml
 
@@ -18,6 +17,7 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
+import util
 # These .proto files are created dynamically by the run.sh script
 sys.path.insert(0, os.path.abspath('./temp/'))
 from proto_py import people_pb2
@@ -31,6 +31,8 @@ SCRIPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 INPUT_DIR = os.path.join(SCRIPT_DIR, '../', 'temp', 'input_files')
 
 def main():
+
+    serial_formats = util.get_serial_formats()
 
     # Check if inputs already exist
     if not os.path.isfile(os.path.join(INPUT_DIR, 'data.csv')):
@@ -51,15 +53,6 @@ def main():
             'address': util.string_generator(size=20),
             'age': random.uniform(0.0, 100.0),
         })
-
-    serial_formats = [
-        'csv',
-        'json',
-        'protobuf',
-        'toml',
-        'yaml',
-        'xml',
-    ]
 
     for serial_format in serial_formats:
         getattr(util, f'{serial_format}_write')(file_data, os.path.join(INPUT_DIR, f'data.{serial_format}'))

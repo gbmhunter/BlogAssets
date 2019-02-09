@@ -7,6 +7,7 @@ import toml
 import yaml
 import xml.etree.cElementTree as ET
 import string
+from typing import List
 
 # These .proto files are created dynamically by the run.sh script
 sys.path.insert(0, os.path.abspath('./temp/'))
@@ -16,7 +17,18 @@ from proto_py import people_pb2
 # OUTPUT_DIR = os.path.join(SCRIPT_DIR, '..', 'temp', 'output_files_python')
 # print(SCRIPT_DIR)
 
-def string_generator(size=6, chars=string.ascii_uppercase + string.digits):
+def get_serial_formats() -> List[str]:
+    serial_formats = [
+        'csv',
+        'json',
+        'protobuf',
+        'toml',
+        'yaml',
+        'xml',
+    ]
+    return serial_formats
+
+def string_generator(size=6, chars=string.ascii_uppercase + string.digits) -> str:
     return ''.join(random.choice(chars) for _ in range(size))
 
 def csv_read(file_path):
@@ -53,16 +65,22 @@ def json_read(file_path):
         data = json.load(file)
     return data
 
-def protobuf_read(file_path):
+def protobuf_read(file_path: str) -> List:
     print(f'Reading .protobuf file.')
     with open(file_path, 'rb') as file:
         protobuf_people = people_pb2.People()
         protobuf_people.ParseFromString(file.read())
 
+    people = []
     for protobuf_person in protobuf_people.person:
-        print(protobuf_person)
+        person = {}
+        person['id'] = protobuf_person.id
+        person['name'] = protobuf_person.name
+        person['address'] = protobuf_person.address
+        person['age'] = protobuf_person.age
+        people.append(person)
 
-    return []
+    return people
 
 def protobuf_write(file_data, file_path):
     print(f'Writing .protobuf file.')
