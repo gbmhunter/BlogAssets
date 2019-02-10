@@ -22,8 +22,8 @@ import util
 sys.path.insert(0, os.path.abspath('./temp/'))
 from proto_py import people_pb2
 
-NUM_OBJECTS = 10
-# NUM_OBJECTS = 10000
+# NUM_OBJECTS = 10
+NUM_OBJECTS = 10000
 
 
 SCRIPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))

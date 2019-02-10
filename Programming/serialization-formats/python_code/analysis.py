@@ -74,19 +74,19 @@ def analyze_file_size():
 
     serial_formats = util.get_serial_formats()
 
-    file_sizes_bytes = []
+    file_sizes_mb = []
     for serial_format in serial_formats:
         file_path = os.path.join(OUTPUT_PY_DIR, f'data.{serial_format}')
         # Item 6 is the size in bytes
         file_size_bytes = os.stat(file_path)[6]
-        file_sizes_bytes.append(file_size_bytes)
+        file_sizes_mb.append(file_size_bytes/(1024.0*1024.0))
 
-    print(f'file_sizes_bytes = {file_sizes_bytes}')
+    print(f'file_sizes_mb = {file_sizes_mb}')
 
-    x_positions = np.arange(len(file_sizes_bytes))
+    x_positions = np.arange(len(file_sizes_mb))
 
     fig, ax = plt.subplots()
-    ax.bar(x_positions, file_sizes_bytes)
+    ax.bar(x_positions, file_sizes_mb)
 
     ax.set_xlabel('Serialization Format')
     ax.set_xticks(x_positions)

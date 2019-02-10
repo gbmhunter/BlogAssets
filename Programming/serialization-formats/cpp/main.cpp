@@ -218,45 +218,48 @@ void yaml_write(std::vector<Person> people, std::string file_path) {
     file.close();
 }
 
+//=============================================================================
+// TIMING FUNCTIONS
+//=============================================================================
 
-double calc_duration_ms(std::chrono::high_resolution_clock::time_point t1,
+double calc_duration_s(std::chrono::high_resolution_clock::time_point t1,
     std::chrono::high_resolution_clock::time_point t2) {
 
     auto duration_us = std::chrono::duration_cast<
         std::chrono::microseconds>(t2 - t1).count();
-    return duration_us/1000.0;
+    return duration_us/(1000.0*1000.0);
 }
 
 std::tuple<double, std::vector<Person>> measure_and_repeat_read(
     std::function<std::vector<Person>(std::string)> func,
     std::string file_path) {
-    std::vector<double> read_durations_ms;
+    std::vector<double> read_durations_s;
     auto people = std::vector<Person>();
     for(uint32_t i = 0; i < 3; i++) {
         auto t1 = std::chrono::high_resolution_clock::now();
         people = func(file_path);
         auto t2 = std::chrono::high_resolution_clock::now();
-        read_durations_ms.push_back(calc_duration_ms(t1, t2));
+        read_durations_s.push_back(calc_duration_s(t1, t2));
     }
-    auto min_duration_ms = std::min_element(std::begin(read_durations_ms),
-        std::end(read_durations_ms));
-    return std::make_tuple(min_duration_ms[0], people);
+    auto min_duration_s = std::min_element(std::begin(read_durations_s),
+        std::end(read_durations_s));
+    return std::make_tuple(min_duration_s[0], people);
 }
 
 double measure_and_repeat_write(
     std::function<void(std::vector<Person>, std::string)> func,
     std::vector<Person> people,
     std::string file_path) {
-    std::vector<double> durations_ms;
+    std::vector<double> durations_s;
     for(uint32_t i = 0; i < 3; i++) {
         auto t1 = std::chrono::high_resolution_clock::now();
         func(people, file_path);
         auto t2 = std::chrono::high_resolution_clock::now();
-        durations_ms.push_back(calc_duration_ms(t1, t2));
+        durations_s.push_back(calc_duration_s(t1, t2));
     }
-    auto min_duration_ms = std::min_element(std::begin(durations_ms),
-        std::end(durations_ms));
-    return min_duration_ms[0];
+    auto min_duration_s = std::min_element(std::begin(durations_s),
+        std::end(durations_s));
+    return min_duration_s[0];
 }
 
 int main(){
@@ -295,21 +298,21 @@ int main(){
     std::chrono::high_resolution_clock::time_point t1;
     std::chrono::high_resolution_clock::time_point t2;
 
-    std::vector<double> read_durations_ms;
+    std::vector<double> read_durations_s;
     std::vector<double> write_durations_ms;
     for(int i = 0; i < extensions.size(); i++) {
         std::cout << "Extension = " << extensions[i] << std::endl;
         auto tuple = measure_and_repeat_read(read_funcs[i],
             input_file_dir + "data." + extensions[i]);
-        read_durations_ms.push_back(std::get<0>(tuple));
-        std::cout << "Read duration (ms) = " << read_durations_ms[i] << std::endl;
+        read_durations_s.push_back(std::get<0>(tuple));
+        std::cout << "Read duration (s) = " << read_durations_s[i] << std::endl;
 
         auto duration_ms = measure_and_repeat_write(
             write_funcs[i],
             std::get<1>(tuple),
             output_file_dir + "data." + extensions[i]);
         write_durations_ms.push_back(duration_ms);
-        std::cout << "Write duration (ms) = " << write_durations_ms[i] << std::endl;
+        std::cout << "Write duration (s) = " << write_durations_ms[i] << std::endl;
     }
 
     // Write out stats
@@ -318,9 +321,9 @@ int main(){
     std::cout << "Writing stats to " << stats_file_path << std::endl;
     std::ofstream stats_file;
     stats_file.open(stats_file_dir + "cpp_stats.csv");
-    stats_file << "Format, Read (ms), Write (ms)" << std::endl;
+    stats_file << "Format, Read (s), Write (s)" << std::endl;
     for(uint32_t i = 0; i < extensions.size(); i++) {
-        stats_file << extensions[i] << "," << read_durations_ms[i] << "," <<
+        stats_file << extensions[i] << "," << read_durations_s[i] << "," <<
             write_durations_ms[i] << std::endl;
     }
     stats_file.close();

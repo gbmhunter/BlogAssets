@@ -5,22 +5,27 @@ import os
 import random
 import string
 import sys
-import timeit
+import time
+# import timeit
 
 import numpy as np
 
 import util
 
+# Number of times the measure_time() function will test the function.
+# Minimum time returned.
+NUM_RERUNS = 3
+
 # This template is used so we can return values from the called function
-timeit.template = """
-def inner(_it, _timer{init}):
-    {setup}
-    _t0 = _timer()
-    for _i in _it:
-        retval = {stmt}
-    _t1 = _timer()
-    return _t1 - _t0, retval
-"""
+# timeit.template = """
+# def inner(_it, _timer{init}):
+#     {setup}
+#     _t0 = _timer()
+#     for _i in _it:
+#         retval = {stmt}
+#     _t1 = _timer()
+#     return _t1 - _t0, retval
+# """
 
 def main():
     print('============================')
@@ -37,8 +42,8 @@ def main():
     data = []
     for serial_format in serial_formats:
         read_func = getattr(util, f'{serial_format}_read')
-        ret_val = measure_time(read_func, os.path.join(read_dir, f'data.{serial_format}'))
-        timing_results_read.append(ret_val[0]*1000.0)
+        ret_val = measure_time_v2(read_func, os.path.join(read_dir, f'data.{serial_format}'))
+        timing_results_read.append(ret_val[0])
         data.append(ret_val[1])
 
     print(f'Performing writes...')
@@ -47,8 +52,8 @@ def main():
     timing_results_write = []
     for i, serial_format in enumerate(serial_formats):
         write_func = getattr(util, f'{serial_format}_write')
-        ret_val = measure_time(write_func, data[i], os.path.join(write_dir, f'data.{serial_format}'))
-        timing_results_write.append(ret_val[0]*1000.0)
+        ret_val = measure_time_v2(write_func, data[i], os.path.join(write_dir, f'data.{serial_format}'))
+        timing_results_write.append(ret_val[0])
 
 
     print(f'timing_results_write = {timing_results_write}')
@@ -61,26 +66,30 @@ def main():
         for i in range(len(serial_formats)):
             csv_writer.writerow([ serial_formats[i], timing_results_read[i], timing_results_write[i] ])
 
-def wrapper(func, *args, **kwargs):
-    def wrapped():
-        return func(*args, **kwargs)
-    return wrapped
+# def wrapper(func, *args, **kwargs):
+#     def wrapped():
+#         return func(*args, **kwargs)
+#     return wrapped
 
-def measure_time(func, *arguments):
-    wrapped = wrapper(func, *arguments)
-    # We only want to include one run in the time info
-    return timeit.timeit(wrapped, number=1, repeat=3)
+# def measure_time(func, *arguments):
+#     wrapped = wrapper(func, *arguments)
+#     # We only want to include one run in the time info
+#     return timeit.timeit(wrapped, number=1)
 
 def measure_time_v2(func, *arguments):
     run_times_s = []
     ret_vals = []
-    for i in range(3):
-        start_time = 
-        ret_val = func(arguments)
-        end_time = 
+    for i in range(NUM_RERUNS):
+        start_time = time.perf_counter()
+        ret_val = func(*arguments)
+        end_time = time.perf_counter()
         ret_vals.append(ret_val)
+        run_times_s.append(end_time - start_time)
 
-    return min(run_times_s), ret_vals
+    # Return minimum run time, and the return value from the first time the function
+    # was run
+    print(f'run_times_s = {run_times_s}')
+    return (min(run_times_s), ret_vals[0])
 
 if __name__ == '__main__':
     main()

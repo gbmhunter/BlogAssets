@@ -32,7 +32,6 @@ def string_generator(size=6, chars=string.ascii_uppercase + string.digits) -> st
     return ''.join(random.choice(chars) for _ in range(size))
 
 def csv_read(file_path):
-    print(f'Reading .csv file.')
     data = []
     with open(file_path, 'r') as file:
         csv_reader = csv.reader(file, delimiter=',')
@@ -48,7 +47,6 @@ def csv_read(file_path):
     return data
 
 def csv_write(file_data, file_path):
-    # print(f'Writing .csv file. file_data = {file_data}')
     with open(file_path, 'w') as file:
         csv_writer = csv.writer(file, delimiter=',')
         # Write header row
@@ -66,7 +64,6 @@ def json_read(file_path):
     return data
 
 def protobuf_read(file_path: str) -> List:
-    print(f'Reading .protobuf file.')
     with open(file_path, 'rb') as file:
         protobuf_people = people_pb2.People()
         protobuf_people.ParseFromString(file.read())
@@ -83,7 +80,6 @@ def protobuf_read(file_path: str) -> List:
     return people
 
 def protobuf_write(file_data, file_path):
-    print(f'Writing .protobuf file.')
 
     protobuf_people = people_pb2.People()
     for person in file_data:
@@ -97,30 +93,24 @@ def protobuf_write(file_data, file_path):
         file.write(protobuf_people.SerializeToString())
 
 def toml_write(file_data, file_path):
-    print(f'Writing .toml file.')
     with open(file_path, 'w') as file:
         toml.dump({ 'data': file_data }, file)
 
 def toml_read(file_path):
-    print(f'Reading .toml file.')
     with open(file_path, 'r') as file:
         data = toml.load(file)
     return data['data']
 
 def yaml_write(file_data, file_path):
-    print(f'Writing .yaml file.')
     with open(file_path, 'w') as file:
         yaml.dump(file_data, file)
 
 def yaml_read(file_path):
-    print(f'Reading .yaml file.')
     with open(file_path, 'r') as file:
         data = yaml.load(file)
     return data
 
 def xml_write(file_data, file_path):
-    print(f'Writing .xml file.')
-
     xml_people = ET.Element('people')
     for person in file_data:
         xml_person = ET.SubElement(xml_people, 'person')
