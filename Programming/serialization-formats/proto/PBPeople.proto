@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+import 'PBPerson.proto';
+
+message PBPeople {
+    repeated PBPerson person = 1;
+}

@@ -10,8 +10,8 @@ import string
 from typing import List
 
 # These .proto files are created dynamically by the run.sh script
-sys.path.insert(0, os.path.abspath('./temp/'))
-from proto_py import people_pb2
+sys.path.insert(0, os.path.abspath('./temp/proto_py/'))
+import PBPeople_pb2
 
 # SCRIPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 # OUTPUT_DIR = os.path.join(SCRIPT_DIR, '..', 'temp', 'output_files_python')
@@ -65,7 +65,7 @@ def json_read(file_path):
 
 def protobuf_read(file_path: str) -> List:
     with open(file_path, 'rb') as file:
-        protobuf_people = people_pb2.People()
+        protobuf_people = PBPeople_pb2.People()
         protobuf_people.ParseFromString(file.read())
 
     people = []
@@ -81,7 +81,7 @@ def protobuf_read(file_path: str) -> List:
 
 def protobuf_write(file_data, file_path):
 
-    protobuf_people = people_pb2.People()
+    protobuf_people = PBPeople_pb2.PBPeople()
     for person in file_data:
         protobuf_person = protobuf_people.person.add()
         protobuf_person.id = person['id']

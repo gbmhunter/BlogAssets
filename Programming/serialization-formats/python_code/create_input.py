@@ -19,8 +19,8 @@ import numpy as np
 
 import util
 # These .proto files are created dynamically by the run.sh script
-sys.path.insert(0, os.path.abspath('./temp/'))
-from proto_py import people_pb2
+# sys.path.insert(0, os.path.abspath('./temp/'))
+# from proto_py import PBPeople_pb2
 
 # NUM_OBJECTS = 10
 NUM_OBJECTS = 10000

@@ -6,6 +6,7 @@
 // (installed in Dockerfile)
 #include <yaml-cpp/yaml.h>
 
+#include "../temp/proto_cpp/PBPeople.pb.h"
 #include "cpptoml.h"
 #include "csv.h"
 #include "json.hpp"
@@ -86,6 +87,32 @@ void json_write(std::vector<Person> people, std::string file_path) {
 
     std::ofstream file(file_path);
     file << json_data << std::endl;
+    file.close();
+}
+
+//=============================================================================
+// PROTOBUF
+//=============================================================================
+
+std::vector<Person> protobuf_read(std::string input_file) {
+    std::ifstream i(input_file);
+    PBPeople protobuf_people;
+    i >> protobuf_people;
+    std::vector<Person> people;
+    while(in.read_row(id, name, address, age)) {
+        Person person(std::stoi(id), name, address, std::stod(age));
+        people.push_back(person);
+    }
+    return people;
+}
+
+void protobuf_write(std::vector<Person> people, std::string file_path) {
+    std::ofstream file;
+    file.open(file_path);
+    for(auto person: people) {
+        file << person.id_ << "," << person.name_ << "," <<
+            person.address_ << "," << person.age_ << std::endl;
+    }
     file.close();
 }
 
