@@ -47,6 +47,18 @@ std::vector<Person> csv_read(std::string input_file) {
 void csv_write(std::vector<Person> people, std::string file_path) {
     std::ofstream file;
     file.open(file_path);
+    std::string output;
+    for(auto person: people) {
+        output += std::to_string(person.id_) + "," + person.name_ + "," + 
+                person.address_ + "," + std::to_string(person.age_) + "\n";
+    }
+    file << output;
+    file.close();
+}
+
+void csv_write_slow(std::vector<Person> people, std::string file_path) {
+    std::ofstream file;
+    file.open(file_path);
     for(auto person: people) {
         file << person.id_ << "," << person.name_ << "," <<
             person.address_ << "," << person.age_ << std::endl;
@@ -95,24 +107,38 @@ void json_write(std::vector<Person> people, std::string file_path) {
 //=============================================================================
 
 std::vector<Person> protobuf_read(std::string input_file) {
+    std::cout << "protobuf_read() called" << std::endl;
     std::ifstream i(input_file);
     PBPeople protobuf_people;
-    i >> protobuf_people;
+    protobuf_people.ParseFromIstream(&i);
     std::vector<Person> people;
-    while(in.read_row(id, name, address, age)) {
-        Person person(std::stoi(id), name, address, std::stod(age));
+
+    for(auto& protobuf_person : protobuf_people.person()) {
+        Person person(
+                protobuf_person.id(),
+                protobuf_person.name(),
+                protobuf_person.address(),
+                protobuf_person.age());
         people.push_back(person);
     }
     return people;
 }
 
 void protobuf_write(std::vector<Person> people, std::string file_path) {
+    std::cout << "protobuf_write() called" << std::endl;
+
+    PBPeople protobuf_people;
+    for(auto person: people) {
+        auto protobuf_person = protobuf_people.add_person();
+        protobuf_person->set_id(person.id_);
+        protobuf_person->set_name(person.name_);
+        protobuf_person->set_address(person.address_);
+        protobuf_person->set_age(person.age_);
+    }
+
     std::ofstream file;
     file.open(file_path);
-    for(auto person: people) {
-        file << person.id_ << "," << person.name_ << "," <<
-            person.address_ << "," << person.age_ << std::endl;
-    }
+    protobuf_people.SerializeToOstream(&file);
     file.close();
 }
 
@@ -299,6 +325,7 @@ int main(){
             std::vector<std::function<std::vector<Person>(std::string)>>{
         csv_read,
         json_read,
+        protobuf_read,
         toml_read,
         xml_read,
         yaml_read,
@@ -308,6 +335,7 @@ int main(){
         std::vector<std::function<void(std::vector<Person>, std::string)>>{
             csv_write,
             json_write,
+            protobuf_write,
             toml_write,
             xml_write,
             yaml_write,
@@ -316,6 +344,7 @@ int main(){
     auto extensions = std::vector<std::string>{
         "csv",
         "json",
+        "protobuf",
         "toml",
         "xml",
         "yaml",

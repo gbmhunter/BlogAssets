@@ -23,7 +23,7 @@ python ./python_code/create_input.py
 
 # Perform read/write serial format testing in C++
 echo 'Compiling C++ code...'
-g++ -pthread ./cpp/main.cpp ./cpp/tinyxml2.cpp -lyaml-cpp -o ./temp/cpp.out
+g++ -pthread ./cpp/main.cpp ./cpp/tinyxml2.cpp ./temp/proto_cpp/PBPeople.pb.cc ./temp/proto_cpp/PBPerson.pb.cc -lyaml-cpp -lprotobuf -o ./temp/cpp.out
 ./temp/cpp.out
 
 # Perform read/write serial format testing in Python

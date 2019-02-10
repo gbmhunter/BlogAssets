@@ -65,7 +65,7 @@ def json_read(file_path):
 
 def protobuf_read(file_path: str) -> List:
     with open(file_path, 'rb') as file:
-        protobuf_people = PBPeople_pb2.People()
+        protobuf_people = PBPeople_pb2.PBPeople()
         protobuf_people.ParseFromString(file.read())
 
     people = []
