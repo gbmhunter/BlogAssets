@@ -32,19 +32,17 @@ class Person {
 // CSV
 //=============================================================================
 
-std::vector<Person> csv_read(std::string input_file) {
-    std::vector<Person> people;
+void csv_read(std::string input_file, std::vector<Person>* people) {
     io::CSVReader<4> in(input_file);
     in.read_header(io::ignore_missing_column, "id", "name", "address", "age");
     std::string id, name, address, age;
     while(in.read_row(id, name, address, age)) {
         Person person(std::stoi(id), name, address, std::stod(age));
-        people.push_back(person);
+        people->push_back(person);
     }
-    return people;
 }
 
-void csv_write(std::vector<Person> people, std::string file_path) {
+void csv_write(const std::vector<Person>& people, const std::string& file_path) {
     std::ofstream file;
     file.open(file_path);
     std::string output;
@@ -70,23 +68,21 @@ void csv_write_slow(std::vector<Person> people, std::string file_path) {
 // JSON
 //=============================================================================
 
-std::vector<Person> json_read(std::string input_file) {
+void json_read(std::string input_file, std::vector<Person>* people) {
     std::ifstream i(input_file);
     nlohmann::json json_data;
     i >> json_data;
 
-    std::vector<Person> json_people;
     for(auto json_person: json_data) {
         Person person(json_person["id"],
                 json_person["name"],
                 json_person["address"],
                 json_person["age"]);
-        json_people.push_back(person);
+        people->push_back(person);
     }
-    return json_people;
 }
 
-void json_write(std::vector<Person> people, std::string file_path) {
+void json_write(const std::vector<Person>& people, const std::string& file_path) {
     auto json_data = nlohmann::json::array();
     for(auto person: people) {
         auto json_person = nlohmann::json::object();
@@ -106,12 +102,11 @@ void json_write(std::vector<Person> people, std::string file_path) {
 // PROTOBUF
 //=============================================================================
 
-std::vector<Person> protobuf_read(std::string input_file) {
+void protobuf_read(std::string input_file, std::vector<Person>* people) {
     std::cout << "protobuf_read() called" << std::endl;
     std::ifstream i(input_file);
     PBPeople protobuf_people;
     protobuf_people.ParseFromIstream(&i);
-    std::vector<Person> people;
 
     for(auto& protobuf_person : protobuf_people.person()) {
         Person person(
@@ -119,14 +114,11 @@ std::vector<Person> protobuf_read(std::string input_file) {
                 protobuf_person.name(),
                 protobuf_person.address(),
                 protobuf_person.age());
-        people.push_back(person);
+        people->push_back(person);
     }
-    return people;
 }
 
-void protobuf_write(std::vector<Person> people, std::string file_path) {
-    std::cout << "protobuf_write() called" << std::endl;
-
+void protobuf_write(const std::vector<Person>& people, const std::string& file_path) {
     PBPeople protobuf_people;
     for(auto person: people) {
         auto protobuf_person = protobuf_people.add_person();
@@ -146,8 +138,7 @@ void protobuf_write(std::vector<Person> people, std::string file_path) {
 // TOML
 //=============================================================================
 
-std::vector<Person> toml_read(std::string input_file) {
-    std::vector<Person> people;
+void toml_read(std::string input_file, std::vector<Person>* people) {
     auto toml_data = cpptoml::parse_file(input_file);
     auto toml_people = toml_data->get_table_array("data");
     for(const auto& toml_person : *toml_people) {
@@ -157,12 +148,11 @@ std::vector<Person> toml_read(std::string input_file) {
             *(toml_person->get_as<std::string>("name")),
             *(toml_person->get_as<std::string>("address")),
             *(toml_person->get_as<double>("age")));
-        people.push_back(person);
+        people->push_back(person);
     }
-    return people;
 }
 
-void toml_write(std::vector<Person> people, std::string file_path) {
+void toml_write(const std::vector<Person>& people, const std::string& file_path) {
 
     auto root = cpptoml::make_table();
     auto toml_people = cpptoml::make_table_array();
@@ -186,8 +176,7 @@ void toml_write(std::vector<Person> people, std::string file_path) {
 // XML
 //=============================================================================
 
-std::vector<Person> xml_read(std::string input_file) {
-    std::vector<Person> people;
+void xml_read(std::string input_file, std::vector<Person>* people) {
 
     tinyxml2::XMLDocument xml_doc;
     xml_doc.LoadFile(input_file.c_str());
@@ -200,13 +189,11 @@ std::vector<Person> xml_read(std::string input_file) {
                 xml_person->FirstChildElement("name")->GetText(),
                 xml_person->FirstChildElement("address")->GetText(),
                 std::stof(xml_person->FirstChildElement("age")->GetText()));
-            people.push_back(person);
+            people->push_back(person);
     }
-
-    return people;
 }
 
-void xml_write(std::vector<Person> people, std::string file_path) {
+void xml_write(const std::vector<Person>& people, const std::string& file_path) {
     tinyxml2::XMLDocument xml_doc;
     auto xml_people = xml_doc.InsertEndChild(xml_doc.NewElement("people"));
     for(auto person : people) {
@@ -238,8 +225,7 @@ void xml_write(std::vector<Person> people, std::string file_path) {
 // YAML
 //=============================================================================
 
-std::vector<Person> yaml_read(std::string input_file) {
-    std::vector<Person> people;
+void yaml_read(std::string input_file, std::vector<Person>* people) {
     std::cout << "yaml" << std::endl;
 
     YAML::Node yaml_people = YAML::LoadFile(input_file);
@@ -251,12 +237,11 @@ std::vector<Person> yaml_read(std::string input_file) {
             yaml_person["address"].as<std::string>(),
             yaml_person["age"].as<double>()
         );
-        people.push_back(person);
+        people->push_back(person);
     }
-    return people;
 }
 
-void yaml_write(std::vector<Person> people, std::string file_path) {
+void yaml_write(const std::vector<Person>& people, const std::string& file_path) {
     YAML::Node yaml_people;
     for(auto person : people) {
         YAML::Node yaml_person;
@@ -283,26 +268,28 @@ double calc_duration_s(std::chrono::high_resolution_clock::time_point t1,
     return duration_us/(1000.0*1000.0);
 }
 
-std::tuple<double, std::vector<Person>> measure_and_repeat_read(
-    std::function<std::vector<Person>(std::string)> func,
-    std::string file_path) {
+double measure_and_repeat_read(
+        std::function<void(std::string, std::vector<Person>*)> func,
+        std::string file_path,
+        std::vector<Person>* people) {
     std::vector<double> read_durations_s;
-    auto people = std::vector<Person>();
     for(uint32_t i = 0; i < 3; i++) {
+        // Clearing the vector should not be timed
+        people->clear();
         auto t1 = std::chrono::high_resolution_clock::now();
-        people = func(file_path);
+        func(file_path, people);
         auto t2 = std::chrono::high_resolution_clock::now();
         read_durations_s.push_back(calc_duration_s(t1, t2));
     }
     auto min_duration_s = std::min_element(std::begin(read_durations_s),
         std::end(read_durations_s));
-    return std::make_tuple(min_duration_s[0], people);
+    return min_duration_s[0];
 }
 
 double measure_and_repeat_write(
-    std::function<void(std::vector<Person>, std::string)> func,
-    std::vector<Person> people,
-    std::string file_path) {
+        std::function<void(const std::vector<Person>&, const std::string&)> func,
+        const std::vector<Person>& people,
+        const std::string& file_path) {
     std::vector<double> durations_s;
     for(uint32_t i = 0; i < 3; i++) {
         auto t1 = std::chrono::high_resolution_clock::now();
@@ -322,7 +309,7 @@ int main(){
     auto stats_file_dir = std::string("./temp/stats/");
 
     auto read_funcs = 
-            std::vector<std::function<std::vector<Person>(std::string)>>{
+            std::vector<std::function<void(std::string, std::vector<Person>*)>>{
         csv_read,
         json_read,
         protobuf_read,
@@ -332,7 +319,7 @@ int main(){
     };
     
     auto write_funcs =
-        std::vector<std::function<void(std::vector<Person>, std::string)>>{
+        std::vector<std::function<void(const std::vector<Person>&, const std::string&)>>{
             csv_write,
             json_write,
             protobuf_write,
@@ -358,15 +345,18 @@ int main(){
     std::vector<double> write_durations_ms;
     for(int i = 0; i < extensions.size(); i++) {
         std::cout << "Extension = " << extensions[i] << std::endl;
-        auto tuple = measure_and_repeat_read(read_funcs[i],
-            input_file_dir + "data." + extensions[i]);
-        read_durations_s.push_back(std::get<0>(tuple));
+        std::vector<Person> people;
+        auto read_duration_s = measure_and_repeat_read(
+                read_funcs[i],
+                input_file_dir + "data." + extensions[i],
+                &people);
+        read_durations_s.push_back(read_duration_s);
         std::cout << "Read duration (s) = " << read_durations_s[i] << std::endl;
 
         auto duration_ms = measure_and_repeat_write(
-            write_funcs[i],
-            std::get<1>(tuple),
-            output_file_dir + "data." + extensions[i]);
+                write_funcs[i],
+                people,
+                output_file_dir + "data." + extensions[i]);
         write_durations_ms.push_back(duration_ms);
         std::cout << "Write duration (s) = " << write_durations_ms[i] << std::endl;
     }
