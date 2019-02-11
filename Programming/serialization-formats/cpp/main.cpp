@@ -37,8 +37,7 @@ void csv_read(const std::string& input_file, std::vector<Person>* people) {
     in.read_header(io::ignore_missing_column, "id", "name", "address", "age");
     std::string id, name, address, age;
     while(in.read_row(id, name, address, age)) {
-        Person person(std::stoi(id), name, address, std::stod(age));
-        people->push_back(person);
+        people->emplace_back(std::stoi(id), name, address, std::stod(age));
     }
 }
 
@@ -74,11 +73,11 @@ void json_read(const std::string& input_file, std::vector<Person>* people) {
     i >> json_data;
 
     for(auto json_person: json_data) {
-        Person person(json_person["id"],
+        people->emplace_back(
+                json_person["id"],
                 json_person["name"],
                 json_person["address"],
                 json_person["age"]);
-        people->push_back(person);
     }
 }
 
@@ -103,18 +102,16 @@ void json_write(const std::vector<Person>& people, const std::string& file_path)
 //=============================================================================
 
 void protobuf_read(const std::string& input_file, std::vector<Person>* people) {
-    std::cout << "protobuf_read() called" << std::endl;
     std::ifstream i(input_file);
     PBPeople protobuf_people;
     protobuf_people.ParseFromIstream(&i);
 
     for(auto& protobuf_person : protobuf_people.person()) {
-        Person person(
+        people->emplace_back(
                 protobuf_person.id(),
                 protobuf_person.name(),
                 protobuf_person.address(),
                 protobuf_person.age());
-        people->push_back(person);
     }
 }
 
@@ -143,12 +140,11 @@ void toml_read(const std::string& input_file, std::vector<Person>* people) {
     auto toml_people = toml_data->get_table_array("data");
     for(const auto& toml_person : *toml_people) {
         auto id = toml_person->get_as<int>("id");
-        Person person(
+        people->emplace_back(
             *(toml_person->get_as<uint32_t>("id")),
             *(toml_person->get_as<std::string>("name")),
             *(toml_person->get_as<std::string>("address")),
             *(toml_person->get_as<double>("age")));
-        people->push_back(person);
     }
 }
 
@@ -184,12 +180,17 @@ void xml_read(const std::string& input_file, std::vector<Person>* people) {
 
     for(auto xml_person = xml_people->FirstChildElement("person"); 
         xml_person != nullptr; xml_person = xml_person->NextSiblingElement()) {
-            Person person(
+            // Person person(
+            //     std::stoi(xml_person->FirstChildElement("id")->GetText()),
+            //     xml_person->FirstChildElement("name")->GetText(),
+            //     xml_person->FirstChildElement("address")->GetText(),
+            //     std::stof(xml_person->FirstChildElement("age")->GetText()));
+            // people->push_back(person);
+            people->emplace_back(
                 std::stoi(xml_person->FirstChildElement("id")->GetText()),
                 xml_person->FirstChildElement("name")->GetText(),
                 xml_person->FirstChildElement("address")->GetText(),
                 std::stof(xml_person->FirstChildElement("age")->GetText()));
-            people->push_back(person);
     }
 }
 
@@ -226,18 +227,14 @@ void xml_write(const std::vector<Person>& people, const std::string& file_path) 
 //=============================================================================
 
 void yaml_read(const std::string& input_file, std::vector<Person>* people) {
-    std::cout << "yaml" << std::endl;
-
     YAML::Node yaml_people = YAML::LoadFile(input_file);
     for (std::size_t i = 0; i<yaml_people.size(); i++) {
-        auto yaml_person = yaml_people[i];
-        Person person(
-            yaml_person["id"].as<int>(),
-            yaml_person["name"].as<std::string>(),
-            yaml_person["address"].as<std::string>(),
-            yaml_person["age"].as<double>()
+        people->emplace_back(
+            yaml_people[i]["id"].as<int>(),
+            yaml_people[i]["name"].as<std::string>(),
+            yaml_people[i]["address"].as<std::string>(),
+            yaml_people[i]["age"].as<double>()
         );
-        people->push_back(person);
     }
 }
 

@@ -23,8 +23,8 @@ def get_serial_formats() -> List[str]:
         'json',
         'protobuf',
         'toml',
-        'yaml',
         'xml',
+        'yaml',
     ]
     return serial_formats
 

@@ -3,7 +3,11 @@
         "*.mmark": "markdown",
         "array": "cpp",
         "ostream": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "initializer_list": "cpp",
+        "string_view": "cpp",
+        "utility": "cpp",
+        "valarray": "cpp"
     },
     "python.pythonPath": "/Users/ghunter/.local/share/virtualenvs/BlogAssets-WPHRZU7Q/bin/python"
 }
