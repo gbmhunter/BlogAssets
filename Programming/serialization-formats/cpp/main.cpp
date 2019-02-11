@@ -32,7 +32,7 @@ class Person {
 // CSV
 //=============================================================================
 
-void csv_read(std::string input_file, std::vector<Person>* people) {
+void csv_read(const std::string& input_file, std::vector<Person>* people) {
     io::CSVReader<4> in(input_file);
     in.read_header(io::ignore_missing_column, "id", "name", "address", "age");
     std::string id, name, address, age;
@@ -68,7 +68,7 @@ void csv_write_slow(std::vector<Person> people, std::string file_path) {
 // JSON
 //=============================================================================
 
-void json_read(std::string input_file, std::vector<Person>* people) {
+void json_read(const std::string& input_file, std::vector<Person>* people) {
     std::ifstream i(input_file);
     nlohmann::json json_data;
     i >> json_data;
@@ -102,7 +102,7 @@ void json_write(const std::vector<Person>& people, const std::string& file_path)
 // PROTOBUF
 //=============================================================================
 
-void protobuf_read(std::string input_file, std::vector<Person>* people) {
+void protobuf_read(const std::string& input_file, std::vector<Person>* people) {
     std::cout << "protobuf_read() called" << std::endl;
     std::ifstream i(input_file);
     PBPeople protobuf_people;
@@ -138,7 +138,7 @@ void protobuf_write(const std::vector<Person>& people, const std::string& file_p
 // TOML
 //=============================================================================
 
-void toml_read(std::string input_file, std::vector<Person>* people) {
+void toml_read(const std::string& input_file, std::vector<Person>* people) {
     auto toml_data = cpptoml::parse_file(input_file);
     auto toml_people = toml_data->get_table_array("data");
     for(const auto& toml_person : *toml_people) {
@@ -176,7 +176,7 @@ void toml_write(const std::vector<Person>& people, const std::string& file_path)
 // XML
 //=============================================================================
 
-void xml_read(std::string input_file, std::vector<Person>* people) {
+void xml_read(const std::string& input_file, std::vector<Person>* people) {
 
     tinyxml2::XMLDocument xml_doc;
     xml_doc.LoadFile(input_file.c_str());
@@ -225,7 +225,7 @@ void xml_write(const std::vector<Person>& people, const std::string& file_path) 
 // YAML
 //=============================================================================
 
-void yaml_read(std::string input_file, std::vector<Person>* people) {
+void yaml_read(const std::string& input_file, std::vector<Person>* people) {
     std::cout << "yaml" << std::endl;
 
     YAML::Node yaml_people = YAML::LoadFile(input_file);
@@ -270,7 +270,7 @@ double calc_duration_s(std::chrono::high_resolution_clock::time_point t1,
 
 double measure_and_repeat_read(
         std::function<void(std::string, std::vector<Person>*)> func,
-        std::string file_path,
+        const std::string& file_path,
         std::vector<Person>* people) {
     std::vector<double> read_durations_s;
     for(uint32_t i = 0; i < 3; i++) {
