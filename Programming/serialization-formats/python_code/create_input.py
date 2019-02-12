@@ -23,8 +23,8 @@ import util
 # from proto_py import PBPeople_pb2
 
 # NUM_OBJECTS = 10
-NUM_OBJECTS = 10000 # Approx. 30s to run
-# NUM_OBJECTS = 100000 # Approx. 5-10mins to run
+# NUM_OBJECTS = 10000 # Approx. 30s to run
+NUM_OBJECTS = 100000 # Approx. 5-10mins to run
 
 
 SCRIPT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))

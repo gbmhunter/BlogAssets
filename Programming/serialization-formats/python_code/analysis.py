@@ -50,11 +50,11 @@ def analyze_stats_file(file_path: str, language: str, file_suffix: str) -> None:
     ax.bar(x_positions, timing_results_write,
             align='center',
             width=bar_width,
-            label="Write Time")
+            label="Serialization")
     ax.bar(x_positions + bar_width, timing_results_read,
             align='center',
             width=bar_width,
-            label="Read Time")
+            label="Deserialization")
 
     ax.set_xlabel('Serialization Format')
     ax.set_xticks(x_positions + bar_width/2)
@@ -64,10 +64,10 @@ def analyze_stats_file(file_path: str, language: str, file_suffix: str) -> None:
 
     ax.legend()
 
-    ax.set_title(f'{language} Read/Write Times For Popular Serialization Formats')
+    ax.set_title(f'{language} Conversion Times For Popular Serialization Formats')
 
     plt.savefig(os.path.join(STATS_DIR, 
-            f'serialization-formats-read-write-times-{file_suffix}.png'))
+            f'serialization-formats-conversion-times-{file_suffix}.png'))
 
 def analyze_file_size():
     print('Analyzing file sizes...')
